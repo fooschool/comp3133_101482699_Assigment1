@@ -1,57 +1,48 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import movieSchema from './schemas/schema.js';
-import movieResolvers from './resolvers/resolvers.js';
+import typeDefs from './schemas/schema.js';
+import resolvers from './resolvers/resolvers.js';
 import mongoose from 'mongoose';
 
-//import ApolloServer
-import { ApolloServer }  from '@apollo/server';
+import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@as-integrations/express5';
-// Express app
+
 const app = express();
 
-//Store sensitive information to env variables
 dotenv.config();
-//console.log(process.env);
 
-//mongoDB Atlas Connection String
-const DB_CONNECTION = `mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_PASSWORD}@cluster0.${process.env.CLUSTER_ID}.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority&appName=Cluster0`
+const DB_CONNECTION = process.env.MONGO_URI || "mongodb://localhost:27017/comp3133_101482699_assigment1";
 
-//TODO - Replace you Connection String here
-const connectDB = async() => {
-    await mongoose.connect(DB_CONNECTION)
-}
+const connectDB = async () => {
+  await mongoose.connect(DB_CONNECTION);
+};
 
 async function startServer() {
-    //Define Apollo Server
-    const server = new ApolloServer({
-      typeDefs: movieSchema,
-      resolvers: movieResolvers
-    });
+  const server = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers,
+  });
 
-    //Start the Apollo Server
-    await server.start();
+  await server.start();
 
-    //Apply middleware to the Express app
-    app.use(
-      '/graphql', 
-      cors(),
-      express.json(),
-      expressMiddleware(server)
-    );
+  app.use(
+    '/graphql',
+    cors(),
+    express.json(),
+    expressMiddleware(server),
+  );
 
-    //Start Express server
-    app.listen(process.env.PORT, () => {
-      console.log(`🚀 Server ready at http://localhost:${process.env.PORT}/graphql`);
-      //Connect to MongoDB Atlas
-      try {
-          connectDB()
-          console.log('Connected to MongoDB Atlas');
-      } catch (error) {
-        console.log(`Unable to connect to DB : ${error.message}`);
-      }
-    })
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => {
+    console.log(`Server ready at http://localhost:${PORT}/graphql`);
+    try {
+      connectDB();
+      console.log("Connected to MongoDB");
+    } catch (error) {
+      console.log(`Unable to connect to DB: ${error.message}`);
+    }
+  });
 }
 
 startServer();
