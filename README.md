@@ -1,152 +1,159 @@
-# Steps
-## Install Packages
+# COMP3133 Assignment 1 - Employee Management System
 
+Student ID: 101482699
+
+## Description
+
+Backend GraphQL API for managing employees built with Node.js, Express, Apollo Server, and MongoDB.
+
+## Tech Stack
+
+- Node.js
+- Express
+- Apollo Server (GraphQL)
+- MongoDB with Mongoose
+- bcryptjs for password hashing
+- Cloudinary for employee photo uploads
+
+## Setup
+
+1. Clone the repo
+2. Install dependencies:
 ```
-npm i @apollo/server @as-integrations/express5 graphql graphql-tag cors dotenv express mongoose
+npm install
 ```
-``` 
-npm install -D nodemon
+3. Create a `.env` file (see `.env.example`):
+```
+MONGO_URI=mongodb://localhost:27017/comp3133_101482699_assigment1
+PORT=4000
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+4. Start the server:
+```
+npm start
+```
+5. Open http://localhost:4000/graphql
+
+## Sample User for Testing
+
+- Username: `admin`
+- Email: `admin@example.com`
+- Password: `admin123`
+
+## GraphQL API
+
+### User Operations
+
+**Signup**
+```
+mutation {
+  signup(username: "admin", email: "admin@example.com", password: "admin123") {
+    id
+    username
+    email
+  }
+}
 ```
 
-# References
-
-https://www.apollographql.com/docs/apollo-server/getting-started
-
-https://medium.com/better-programming/a-simple-crud-app-using-graphql-nodejs-mongodb-78319908f563
-
-https://medium.com/the-node-js-collection/making-your-node-js-work-everywhere-with-environment-variables-2da8cdf6e786
-
-# Sample Queries
-
-### 1. Query all movies
+**Login**
 ```
 query {
-  movies {
+  login(usernameOrEmail: "admin", password: "admin123") {
     id
-    name
-    director_name
-    production_house
-    release_date
-    rating
+    username
+    email
   }
 }
 ```
 
-### 2. Query a single movie by ID
+### Employee Operations
+
+**Add Employee**
+```
+mutation {
+  addEmployee(
+    first_name: "John"
+    last_name: "Doe"
+    email: "john@example.com"
+    gender: "Male"
+    designation: "Developer"
+    salary: 5000
+    date_of_joining: "2025-01-15"
+    department: "Engineering"
+  ) {
+    id
+    first_name
+    last_name
+    email
+  }
+}
+```
+
+**Get All Employees**
 ```
 query {
-  movie(id: "60f48f8b7b45c2322f1a9b2d") {
+  getAllEmployees {
     id
-    name
-    director_name
-    production_house
-    release_date
-    rating
+    first_name
+    last_name
+    email
+    designation
+    department
+    salary
   }
 }
 ```
 
-### 3. Mutation to add a new movie
+**Get Employee by ID**
+```
+query {
+  getEmployeeById(id: "EMPLOYEE_ID") {
+    id
+    first_name
+    last_name
+    email
+    designation
+    salary
+    department
+  }
+}
+```
+
+**Update Employee**
 ```
 mutation {
-  addMovie(
-    name: "Interstellar",
-    director_name: "Christopher Nolan",
-    production_house: "Paramount Pictures",
-    release_date: "2014-11-07",
-    rating: 8.6
-  ) {
+  updateEmployee(id: "EMPLOYEE_ID", salary: 6500, designation: "Senior Developer") {
     id
-    name
-    director_name
-    production_house
-    release_date
-    rating
+    first_name
+    last_name
+    designation
+    salary
   }
 }
 ```
 
-### 4. Mutation to update a movie
+**Delete Employee**
 ```
 mutation {
-  updateMovie(
-    id: "60f48f8b7b45c2322f1a9b2d",
-    name: "Interstellar (Updated)",
-    director_name: "Christopher Nolan",
-    production_house: "Warner Bros.",
-    release_date: "2014-11-07",
-    rating: 9.0
-  ) {
+  deleteEmployee(id: "EMPLOYEE_ID") {
     id
-    name
-    director_name
-    production_house
-    release_date
-    rating
+    first_name
+    last_name
   }
 }
 ```
 
-### 5. Mutation to delete a movie
+**Search by Department or Designation**
 ```
-mutation {
-  deleteMovie(id: "60f48f8b7b45c2322f1a9b2d") {
+query {
+  searchEmployees(department: "Engineering") {
     id
-    name
-    director_name
-    production_house
-    release_date
-    rating
+    first_name
+    last_name
+    department
+    designation
   }
-}
-```
-
-### More queries
-```
-query Movies{
-  __typename
-  movies {
-    __typename
-    id
-    name
-    production_house
-    rating
-    release_date
-  }
-
-  a: movie(id: "67abe736d20bfd54ba53ee95") {
-     ...MovieFields
-  }
-
-  b: movie(id: "67ae7dcfa052c72aef43187e") {
-   ...MovieFields
-  }
-}
-
-fragment MovieFields on Movie{
-  id
-  name
-  director_name
-}
-```
-```
-mutation($id: ID!, $name: String!, $directorName: String!, $productionHouse: String!, $releaseDate: String!, $rating: Float!) {
-  updateMovie(id: $id, name: $name, director_name: $directorName, production_house: $productionHouse, release_date: $releaseDate, rating: $rating) {
-    id
-    name
-    director_name
-    rating
-    release_date
-    production_house
-  }
-}
-** Variables **
-{
-  "id": "67ae7dcfa052c72aef43187e",
-  "name": "The Dark Knight",
-  "directorName": "Christopher Nolan",
-  "productionHouse": "Warner Bros.",
-  "releaseDate": "2008-07-18",
-  "rating": 9.5,
 }
 ```
