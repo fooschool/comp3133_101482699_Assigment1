@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import Employee from '../models/Employee.js';
 import bcrypt from 'bcryptjs';
 
 const resolvers = {
@@ -14,6 +15,23 @@ const resolvers = {
 
       return user;
     },
+
+    getAllEmployees: async () => {
+      return await Employee.find();
+    },
+
+    getEmployeeById: async (_, { id }) => {
+      let emp = await Employee.findById(id);
+      if (!emp) throw new Error("Employee not found");
+      return emp;
+    },
+
+    searchEmployees: async (_, { designation, department }) => {
+      let filter = {};
+      if (designation) filter.designation = designation;
+      if (department) filter.department = department;
+      return await Employee.find(filter);
+    },
   },
 
   Mutation: {
@@ -24,6 +42,29 @@ const resolvers = {
       let hashedPw = await bcrypt.hash(password, 10);
       let newUser = await User.create({ username, email, password: hashedPw });
       return newUser;
+    },
+
+    addEmployee: async (_, args) => {
+      let existing = await Employee.findOne({ email: args.email });
+      if (existing) throw new Error("Employee with this email already exists");
+
+      let emp = await Employee.create(args);
+      return emp;
+    },
+
+    updateEmployee: async (_, { id, ...updates }) => {
+      let emp = await Employee.findByIdAndUpdate(id, updates, {
+        new: true,
+        runValidators: true,
+      });
+      if (!emp) throw new Error("Employee not found");
+      return emp;
+    },
+
+    deleteEmployee: async (_, { id }) => {
+      let emp = await Employee.findByIdAndDelete(id);
+      if (!emp) throw new Error("Employee not found");
+      return emp;
     },
   },
 };
