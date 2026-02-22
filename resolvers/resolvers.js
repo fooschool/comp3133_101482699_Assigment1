@@ -1,6 +1,7 @@
 import User from '../models/User.js';
 import Employee from '../models/Employee.js';
 import bcrypt from 'bcryptjs';
+import cloudinary from '../config/cloudinary.js';
 
 const resolvers = {
   Query: {
@@ -48,11 +49,25 @@ const resolvers = {
       let existing = await Employee.findOne({ email: args.email });
       if (existing) throw new Error("Employee with this email already exists");
 
+      if (args.employee_photo) {
+        let result = await cloudinary.uploader.upload(args.employee_photo, {
+          folder: 'employees',
+        });
+        args.employee_photo = result.secure_url;
+      }
+
       let emp = await Employee.create(args);
       return emp;
     },
 
     updateEmployee: async (_, { id, ...updates }) => {
+      if (updates.employee_photo) {
+        let result = await cloudinary.uploader.upload(updates.employee_photo, {
+          folder: 'employees',
+        });
+        updates.employee_photo = result.secure_url;
+      }
+
       let emp = await Employee.findByIdAndUpdate(id, updates, {
         new: true,
         runValidators: true,
