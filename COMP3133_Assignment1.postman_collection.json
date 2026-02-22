@@ -1,0 +1,198 @@
+{
+	"info": {
+		"name": "COMP3133 Assignment 1 - Employee Management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Signup - Success",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"mutation { signup(username: \\\"testuser\\\", email: \\\"test@example.com\\\", password: \\\"password123\\\") { id username email created_at } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Signup - Duplicate Error",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"mutation { signup(username: \\\"testuser\\\", email: \\\"test@example.com\\\", password: \\\"password123\\\") { id username email } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Login with Username",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"{ login(usernameOrEmail: \\\"testuser\\\", password: \\\"password123\\\") { id username email } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Login with Email",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"{ login(usernameOrEmail: \\\"test@example.com\\\", password: \\\"password123\\\") { id username email } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Login - Wrong Password",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"{ login(usernameOrEmail: \\\"testuser\\\", password: \\\"wrongpass\\\") { id username email } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Employee",
+			"item": [
+				{
+					"name": "Add Employee - John",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"mutation { addEmployee(first_name: \\\"John\\\", last_name: \\\"Doe\\\", email: \\\"john@example.com\\\", gender: \\\"Male\\\", designation: \\\"Developer\\\", salary: 5000, date_of_joining: \\\"2025-01-15\\\", department: \\\"Engineering\\\") { id first_name last_name email gender designation salary date_of_joining department created_at } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Add Employee - Jane",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"mutation { addEmployee(first_name: \\\"Jane\\\", last_name: \\\"Smith\\\", email: \\\"jane@example.com\\\", gender: \\\"Female\\\", designation: \\\"Manager\\\", salary: 8000, date_of_joining: \\\"2024-06-01\\\", department: \\\"HR\\\") { id first_name last_name email designation department salary } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Add Employee - Duplicate Email Error",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"mutation { addEmployee(first_name: \\\"John\\\", last_name: \\\"Doe\\\", email: \\\"john@example.com\\\", gender: \\\"Male\\\", designation: \\\"Developer\\\", salary: 5000, date_of_joining: \\\"2025-01-15\\\", department: \\\"Engineering\\\") { id } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Get All Employees",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"{ getAllEmployees { id first_name last_name email designation department salary } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Get Employee By ID",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"{ getEmployeeById(id: \\\"REPLACE_WITH_EMPLOYEE_ID\\\") { id first_name last_name email gender designation salary date_of_joining department } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Update Employee",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"mutation { updateEmployee(id: \\\"REPLACE_WITH_EMPLOYEE_ID\\\", salary: 6500, designation: \\\"Senior Developer\\\") { id first_name last_name designation salary } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Search by Department",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"{ searchEmployees(department: \\\"Engineering\\\") { id first_name last_name department designation } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Search by Designation",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"{ searchEmployees(designation: \\\"Manager\\\") { id first_name last_name department designation } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Delete Employee",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"mutation { deleteEmployee(id: \\\"REPLACE_WITH_EMPLOYEE_ID\\\") { id first_name last_name } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				},
+				{
+					"name": "Delete Employee - Not Found Error",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"mutation { deleteEmployee(id: \\\"000000000000000000000000\\\") { id } }\"\n}"
+						},
+						"url": {"raw": "http://localhost:4000/graphql", "protocol": "http", "host": ["localhost"], "port": "4000", "path": ["graphql"]}
+					}
+				}
+			]
+		}
+	]
+}
